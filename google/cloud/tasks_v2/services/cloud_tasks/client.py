@@ -347,6 +347,7 @@ class CloudTasksClient(metaclass=CloudTasksClientMeta):
             client_options = client_options_lib.ClientOptions()
         use_client_cert = os.getenv("GOOGLE_API_USE_CLIENT_CERTIFICATE", "false")
         use_mtls_endpoint = os.getenv("GOOGLE_API_USE_MTLS_ENDPOINT", "auto")
+        tasks_emulator_host = os.getenv("TASKS_EMULATOR_HOST", None)
         if use_client_cert not in ("true", "false"):
             raise ValueError(
                 "Environment variable `GOOGLE_API_USE_CLIENT_CERTIFICATE` must be either `true` or `false`"
@@ -367,6 +368,8 @@ class CloudTasksClient(metaclass=CloudTasksClientMeta):
         # Figure out which api endpoint to use.
         if client_options.api_endpoint is not None:
             api_endpoint = client_options.api_endpoint
+        elif tasks_emulator_host:
+            api_endpoint = tasks_emulator_host
         elif use_mtls_endpoint == "always" or (
             use_mtls_endpoint == "auto" and client_cert_source
         ):
